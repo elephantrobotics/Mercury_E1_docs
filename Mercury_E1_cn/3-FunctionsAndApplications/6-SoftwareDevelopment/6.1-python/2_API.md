@@ -1,37 +1,20 @@
-# Pro 450 Python Socket API
+# Mercury E1 Python API
 
 ## 使用前准备
 
 在使用 Python API 之前，请先确认以下硬件和环境准备齐全：
 
 - **硬件设备**  
-  - MyCobot Pro 450 机械臂  
-  - 网线（用于连接机械臂与电脑）  
+  - Mercury E1 机械臂  
+  - 485串口设备（用于连接机械臂与电脑）  
   - 电源适配器  
   - 急停开关（确保安全操作）
 
 - **软件与环境**  
   - 已安装 Python 3.6 及以上版本  
   - 已安装 `pymycobot` 库（通过 `pip install pymycobot` 终端命令安装）  
-  - 确保 MyCobot Pro 450 已正确接通电源，并处于待机状态  
-  - **注意**：Pro 450 服务端会在设备上电后自动启动，无需手动操作  
-
-- **网络配置**  
-  - MyCobot Pro 450 默认 IP 地址：`192.168.0.232`  
-  - 默认端口号：`4500`  
-  - **注意**：PC 端需要将本机网卡 IP 设置为 **同一网段**（例如 `192.168.0.xxx`，`xxx` 为 2~254 之间的任意数，且不能与机械臂冲突）。 
-  - 具体配置方式请查看 [静态IP配置](https://docs.elephantrobotics.com/docs/mycobot-pro450-cn/3-FunctionsAndApplications/5-BasicApplication/5.3-myStudioPro/5.3.1-myStudioFirstUse.html#%E9%9D%99%E6%80%81ip%E9%85%8D%E7%BD%AE) 章节内容。
-  - 示例：  
-    - 机械臂 IP：`192.168.0.232`  
-    - PC IP：`192.168.0.100`  
-    - 子网掩码：`255.255.255.0`
-    - DNS服务器：`114.114.114.114`
-  
-  - **验证**：完成网络配置后，可在 PC 终端执行以下命令，若能成功返回数据包，则说明网络连接正常：  
-  
-    ```bash
-    ping 192.168.0.232
-    ```
+  - 确保 Mercury E1 已正确接通电源，并处于待机状态  
+  - **注意**：Mercury E1 服务端会在设备上电后自动启动，无需手动操作  
 
 ---
 
@@ -39,19 +22,19 @@
 
 API（Application Programming Interface），又称应用程序编程接口函数，是预先定义好的函数。使用以下函数接口时，请在一开始就导入我们的API库，导入方式为输入如下代码，否则将无法成功运行：
 
-**注意：** 使用前需确保MyCobot Pro 450已开启服务端，并且 PC 与机械臂处于同一网段
+**注意：** 使用前需确保Mercury E1已开启服务端
 
 ```python
 # 示例
-from pymycobot import Pro450Client
+from pymycobot import MercuryE1
 
-# IP地址默认是"192.168.0.232"，端口号默认是4500
-mc = Pro450Client('192.168.0.232', 4500)
+# 串口号根据实际情况修改，波特率默认是1000000
+me = MercuryE1('COM3', 1000000)
 
-if mc.is_power_on() !=1:
-    mc.power_on()
+if me.is_power_on() !=1:
+    me.power_on()
 
-print(mc.get_angles())
+print(me.get_angles())
 ```
 
 ### 1. 系统状态
@@ -70,7 +53,7 @@ print(mc.get_angles())
 
 - **功能：** 检测机器型号
 
-- **返回值：** 定义规则：实际机器型号。例如，MyCobot Pro 450 型号为 4503
+- **返回值：** 定义规则：实际机器型号。例如，Mercury E1型号为 6500
 
 #### `get_atom_version()`
 
@@ -163,7 +146,7 @@ print(mc.get_angles())
   - 0-失败
   - -1-错误
 
-#### `set_communication_mode(protocol_mode)`
+<!-- #### `set_communication_mode(protocol_mode)`
 
 - **功能:** 设置当前机器人Modbus通信模式。
   
@@ -183,7 +166,7 @@ print(mc.get_angles())
 - **返回值:**
   - `protocol_mode`: `int`
     - `0`: 自定义协议
-    - `1`: Modbus协议
+    - `1`: Modbus协议 -->
 
 #### `get_free_move_mode()`
 
@@ -206,20 +189,20 @@ print(mc.get_angles())
 #### `get_robot_status()`
 
 - **功能：** 读取机器人错误安全状态
-- **返回值:** 0 - 正常。比如[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]，其他 - 机器人异常
-  - `[关节是否碰撞，是否正在运动，J1是否超限，J2是否超限，J3是否超限，J4是否超限，J5是否超限，J6是否超限，J1是否电机硬件报错，J2是否电机硬件报错，J3是否电机硬件报错，J4是否电机硬件报错，J5是否电机硬件报错，J6是否电机硬件报错，J1是否软件通信报错，J2是否软件通信报错，J3是否软件通信报错，J4是否软件通信报错，J5是否软件通信报错，J6是否软件通信报错]`
+- **返回值:** 0 - 正常。比如[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]，其他 - 机器人异常
+  - `[关节是否碰撞，是否正在运动，J1是否超限，J2是否超限，J3是否超限，J4是否超限，J5是否超限，J6是否超限，J7是否超限，J1是否电机硬件报错，J2是否电机硬件报错，J3是否电机硬件报错，J4是否电机硬件报错，J5是否电机硬件报错，J6是否电机硬件报错, J7是否电机硬件报错，J1是否软件通信报错，J2是否软件通信报错，J3是否软件通信报错，J4是否软件通信报错，J5是否软件通信报错，J6是否软件通信报错, J7是否软件通信报错]`
 
 #### `servo_restore(joint_id)`
 
 - **功能**：清除关节异常
 - **参数**：
-  - `joint_id`: int. 关节 id 1 - 6，254-所有关节恢复。
+  - `joint_id`: int. 关节 id 1 - 7，254-所有关节恢复。
 
 #### `get_comm_error_counts(joint_id)`
 
 - **功能**：读取通信异常次数
 - **参数**：
-  - `joint_id`: int. 关节 id 1 - 6
+  - `joint_id`: int. 关节 id 1 - 7
 - **返回值**： `list` 长度为4的列表，比如[0, 0, 0, 0]，分别代表：
   - `[0]`: 关节发送异常次数
   - `[1]`: 关节读取异常次数
@@ -255,7 +238,7 @@ print(mc.get_angles())
 
 ### 4. 机器人运动控制
 
-#### `set_control_mode(mode)`
+<!-- #### `set_control_mode(mode)`
 
 - **功能**：设置机器人运动模式
 - **参数**：
@@ -268,7 +251,7 @@ print(mc.get_angles())
 - **功能**：获取机器人运动模式
 - **返回值**：
   - `0`: 位置模式
-  - `1`: 力矩模式
+  - `1`: 力矩模式 -->
   
 #### `get_angles()`
 
@@ -279,23 +262,24 @@ print(mc.get_angles())
 
 - **功能：** 获取单关节的角度
 - **参数：**
-  - `joint_id`: `int`，关节ID， 范围1 ~ 6
+  - `joint_id`: `int`，关节ID， 范围1 ~ 7
 - **返回值**：`float` 单关节角度
 
 #### `send_angle(id, degree, speed)`
 
 - **功能：** 向机械臂发送一个关节角度
 - **参数：**
-  - `id`：关节 id（`genre.Angle`），范围 int 1-6
+  - `id`：关节 id（`genre.Angle`），范围 int 1-7
   - `degree`：角度值（`float`）
       | 关节 Id | 范围 |
       | ---- | ---- |
-      | 1 | -162 ~ 162 |
-      | 2 | -125 ~ 125 |
-      | 3 | -154 ~ 154 |
-      | 4 | -162 ~ 162 |
-      | 5 | -162 ~ 162 |
-      | 6 | -165 ~ 165 |
+      | 1 | -155 ~ 155 |
+      | 2 | -65 ~ 105 |
+      | 3 | -160 ~ 160 |
+      | 4 | -135 ~ 18 |
+      | 5 | -160 ~ 160 |
+      | 6 | -100 ~ 117 |
+      | 6 | -135 ~ 135 |
 
     - `speed`：机械臂运动速度及范围 1~100
 
@@ -303,7 +287,7 @@ print(mc.get_angles())
 
 - **功能：** 将所有角度发送到机械臂的所有关节
 - **参数：**
-  - `angles`：度数列表（`List[float]`），长度 6
+  - `angles`：度数列表（`List[float]`），长度 7
   - `speed`：（`int`）1 ~ 100
 
 #### `get_coords()`
@@ -319,9 +303,9 @@ print(mc.get_angles())
   - `coord`：坐标值（`float`）
       | 坐标 ID | 范围 |
       | ---- | ---- |
-      | x | -474 ~ 474 |
-      | y | -474 ~ 474 |
-      | z | -180 ~ 677 |
+      | x | -623 ~ 623 |
+      | y | -623 ~ 623 |
+      | z | -172 ~ 846 |
       | rx | -180 ~ 180 |
       | ry | -180 ~ 180 |
       | rz | -180 ~ 180 |
@@ -393,7 +377,7 @@ print(mc.get_angles())
 
 - **功能：** jog 控制角度，关节持续运动
 - **参数**:
-  - `joint_id`: 表示机械臂的关节ID，范围 1 ~ 6
+  - `joint_id`: 表示机械臂的关节ID，范围 1 ~ 7
   - `direction(int)`: 控制机械臂运动方向，输入`0`为负值方向运动，输入`1`为正值方向运动
   - `speed`: 1 ~ 100
 
@@ -409,7 +393,7 @@ print(mc.get_angles())
 
 - **功能：** 单关节角度增量控制
 - **参数**:
-  - `joint_id`: 1-6
+  - `joint_id`: 1-7
   - `increment`: 基于当前位置角度的增量移动
   - `speed`: 1 ~ 100
 
@@ -472,29 +456,29 @@ print(mc.get_angles())
 
 - **功能:** 获取指定关节的最大运动角度
 - **参数:**
-  - `joint_id` : 输入关节ID（范围1-6）
+  - `joint_id` : 输入关节ID（范围1-7）
 - **返回值**：`float` 角度值
 
 #### `set_joint_min_angle(id, angle)`
 
 - **功能:** 设置最小关节角度限制
 - **参数:**
-  - `id` : 输入关节ID（范围1-6）
+  - `id` : 输入关节ID（范围1-7）
   - `angle`: 参考[send_angle()](#send_angleid-degree-speed)接口中对应关节的限制信息，不得小于最小值
 
 #### `set_joint_max_angle(id, angle)`
 
 - **功能：** 设置最大关节角度限制
 - **参数：**
-  - `id` ：输入关节ID（范围1-6）
+  - `id` ：输入关节ID（范围1-7）
   - `angle`：参考[send_angle()](#send_angleid-degree-speed)接口中对应关节的限制信息，不得大于最大值
 
 ### 8. 关节电机辅助控制
 
-#### `get_servo_encoders()`
+<!-- #### `get_servo_encoders()`
 
 - **功能**：读取全关节编码器值
-- **返回值**： 长度为6的列表
+- **返回值**： 长度为6的列表 -->
 
 <!-- #### `is_servo_enable(servo_id)`
 
@@ -517,26 +501,30 @@ print(mc.get_angles())
 
 - **功能：** 校准关节执行器的当前位置为角度零点
 - **参数**:
-  - `servo_id`: 1 - 6
+  - `servo_id`: 1 - 7
 
-#### `set_break（joint_id, value）`
+#### `set_servos_calibration()`
+
+- **功能：** 校准机械臂全部关节的当前位置为角度零点
+  
+<!-- #### `set_break（joint_id, value）`
 
 - **功能：** 设置关节刹车
 - **参数**：
   - `joint_id`: int. 关节 id 1 - 6
   - `value`: int. 0 - 掉使能, 1 - 使能
-- **返回值:** 0 : 失败; 1 : 成功
+- **返回值:** 0 : 失败; 1 : 成功 -->
 
 #### `set_motor_enabled(joint_id, state`
 
 - **功能：** 设置机器人力矩状态。（释放关节接口）
 - **参数**：
-  - `joint_id`: int. 关节 id 1 - 6, 254-所有关节
+  - `joint_id`: int. 关节 id 1 - 7, 254-所有关节
   - `state`: int. 0 - 掉使能, 1 - 使能
 
 ### 9. 拖动示教
 
-#### `drag_teach_save()`
+<!-- #### `drag_teach_save()`
 
 - **功能：** 开始录制并拖动教学点。
   - 注意：为了呈现最佳运动效果，录制时间请勿超过120秒
@@ -551,22 +539,11 @@ print(mc.get_angles())
 
 #### `drag_teach_clean()`
 
-- **功能：** 清除采样点。
-
-#### `set_pro_gripper_offset(offset=2)`
-
-- **功能：** 设置Pro力控夹爪偏移。执行带夹爪拖动示教轨迹时，实际执行的夹爪角度会减去offset（默认为2）
-- **参数**： `int`
-  - `offset`: 范围 -127 ~ 127，默认2
-
-#### `get_pro_gripper_offset()`
-
-- **功能：** 获取Pro力控夹爪偏移。执行带夹爪拖动示教轨迹时，实际执行的夹爪角度会减去offset（默认为2）
-- **返回值**： `int`，范围 -127 ~ 127
+- **功能：** 清除采样点。 -->
 
 ### 10. 动力学
 
-#### `get_collision_mode()`
+<!-- #### `get_collision_mode()`
 
 - **功能**: 查询碰撞检测模式
 - **返回值:**
@@ -614,29 +591,29 @@ print(mc.get_angles())
 
 #### `parameter_identify()`
 
-- **功能**: 动力学参数辨识
+- **功能**: 动力学参数辨识 -->
 
 ### 11. 圆弧运动
 
-#### `write_move_c(transpoint, endpoint, speed)`
+<!-- #### `write_move_c(transpoint, endpoint, speed)`
 
 - **功能**：圆弧轨迹运动(指定途经点)
 - **参数**：
   - `transpoint(list)`：圆弧坐标途经点
   - `endpoint (list)`：圆弧坐标结束点
-  - `speed(int)`： 1 ~ 100
+  - `speed(int)`： 1 ~ 100 -->
 
 ### 12. 运行辅助信息
 
-#### `get_zero_pos()`
+<!-- #### `get_zero_pos()`
 
 - **功能**: 读取零位编码器值
-- **返回值:** `list`6个关节的零编码器的值
+- **返回值:** `list`6个关节的零编码器的值 -->
 
 #### `get_servo_speeds()`
 
 - **功能**：获取所有关节的运动速度
-- **返回值**： 一个列表
+- **返回值**： 一个列表，单位 rmp
 
 #### `get_servo_currents()`
 
@@ -647,6 +624,11 @@ print(mc.get_angles())
 
 - **功能**：获取所有关节的运动状态
 - **返回值**： 值为 0 表示没有错误
+
+#### `get_motor_temps()`
+
+- **功能**：获取电机温度
+- **返回值**： 一个列表，1-7位代表线圈温度，8-14位代表 mos管温度。
 
 ### 13. 末端 IO 控制
 
@@ -679,7 +661,7 @@ print(mc.get_angles())
   - 0: no clicked
   - 1: clicked -->
 
-#### `set_color(r, g, b)`
+<!-- #### `set_color(r, g, b)`
 
 - **功能**: 设置机械臂末端灯光颜色
 
@@ -689,11 +671,11 @@ print(mc.get_angles())
 
   - `g (int)`: 0 ~ 255
 
-  - `b (int)`: 0 ~ 255
+  - `b (int)`: 0 ~ 255 -->
 
 ### 15. 底部 IO 控制
 
-#### `set_base_io_output(pin_no, pin_signal)`
+<!-- #### `set_base_io_output(pin_no, pin_signal)`
 
 - **功能**：设置底部IO输出状态
 - **参数**：
@@ -733,7 +715,7 @@ print(mc.get_angles())
 
 - **功能：** 底部外部设备485控制
 - **参数:**
-  - `data` (`list`) 列表内容为十六进制格式，最大长度是64。
+  - `data` (`list`) 列表内容为十六进制格式，最大长度是64。 -->
 
 ### 16. 设置末端485通信
 
@@ -865,7 +847,7 @@ print(mc.get_angles())
 #### `get_model_direction()`
 
 - **功能:** 获取关节模型方向
-- **返回值:** 1-6关节的模型方向
+- **返回值:** 1-7关节的模型方向
   - `1` - 与电机同向
   - `0` - 与电机反向
 
@@ -873,9 +855,10 @@ print(mc.get_angles())
 
 - **功能:** 设置关节模型方向
 - **参数:**
-  - `joint_id (int)`: 1 ~ 6
+  - `joint_id (int)`: 1 ~ 7
   - `direction (int)`: `1` - 与电机同向. `0` - 与电机反向
 
+<!-- 
 #### `get_filter_len(rank)`
 
 - **功能:** 获取滤波器参数
@@ -898,7 +881,7 @@ print(mc.get_angles())
     - `3`：关节速度融合滤波器
     - `4`：坐标速度融合滤波器
     - `5`：拖动示教采样周期
-  - `value (int)`: 1 ~ 255
+  - `value (int)`: 1 ~ 255 -->
 
 #### `get_fusion_parameters(rank_mode)`
 
@@ -920,13 +903,13 @@ print(mc.get_angles())
 
 ### 19. 运动学算法接口
 
-#### `solve_inv_kinematics(target_coords, current_angles)`
+<!-- #### `solve_inv_kinematics(target_coords, current_angles)`
 
 - **功能** : 将坐标转为角度。
 - **参数：**
   - `target_coords`: `list` 所有坐标的浮点列表。
   - `current_angles`: `list` 所有角度的浮点列表，机械臂当前角度
-- **返回值**: `list` 所有角度的浮点列表。
+- **返回值**: `list` 所有角度的浮点列表。 -->
 
 ### 20. Pro 力控夹爪
 

@@ -16,7 +16,7 @@ pip install pymycobot --upgrade --user
 
 ### Python下载和安装
 
-**适用设备：** **myCobot Pro 450**
+**适用设备：** **Mercury E1**
 
 
 目前，Python有两个版本，一个是`2.x`版，一个是`3.x`版，这两个版本是不兼容的。由于`3.x`版越来越普及，我们的教程将以最新的`3.10.7`版本为例进行说明。
@@ -210,17 +210,17 @@ cd <your-path>/pymycobot
 
 ## Python简单使用
 
-上述准备工作完成之后，开始通过Python代码实现对机械臂的操控。这里以MyCobot Pro 450版本为例进行演示。
+上述准备工作完成之后，开始通过Python代码实现对机械臂的操控。这里以Mercury E1版本为例进行演示。
 
 首先，打开您安装好的PyCharm，新建一个Python文件，输入以下代码，导入我们的库：
 
 ```python
-from pymycobot import Pro450Client
+from pymycobot import MercuryE1
 ```
 
 **注意：**
 
-1. 如果输入`from pymycobot.mycobotpro450 import MyCobotPro450`，字体下方没有出现红色波浪线证明已经安装成功可以使用了，如果出现红色波浪线可以参考[**如何安装API库** ](https://www.cnblogs.com/xiaoguan-bky/p/11184740.html)，[**如何调用API库**](https://jingyan.baidu.com/article/25648fc1e86917d191fd009d.html)。
+1. 如果输入`from pymycobot import MercuryE1`，字体下方没有出现红色波浪线证明已经安装成功可以使用了，如果出现红色波浪线可以参考[**如何安装API库** ](https://www.cnblogs.com/xiaoguan-bky/p/11184740.html)，[**如何调用API库**](https://jingyan.baidu.com/article/25648fc1e86917d191fd009d.html)。
 
 2. 如果不想通过上述命令安装API库，可以通过以下github下载项目到本地。 
 
@@ -233,33 +233,16 @@ from pymycobot import Pro450Client
 在使用案例功能I之前，请先确认以下硬件和环境准备齐全：
 
 - **硬件设备**  
-  - MyCobot Pro 450 机械臂  
-  - 网线（用于连接机械臂与电脑）  
+  - Mercury E1 机械臂  
+  - 485串口设备（用于连接机械臂与电脑）  
   - 电源适配器  
   - 急停开关（确保安全操作）
 
 - **软件与环境**  
   - 已安装 Python 3.6 及以上版本  
   - 已安装 `pymycobot` 库（通过 `pip install pymycobot` 终端命令安装）  
-  - 确保 MyCobot Pro 450 已正确接通电源，并处于待机状态  
-  - **注意**：Pro 450 服务端会在设备上电后自动启动，无需手动操作  
-
-- **网络配置**  
-  - MyCobot Pro 450 默认 IP 地址：`192.168.0.232`  
-  - 默认端口号：`4500`  
-  - **注意**：PC 端需要将本机网卡 IP 设置为 **同一网段**（例如 `192.168.0.xxx`，`xxx` 为 2~254 之间的任意数，且不能与机械臂冲突）。 
-  - 具体配置方式请查看 [静态IP配置](https://docs.elephantrobotics.com/docs/mycobot-pro450-cn/3-FunctionsAndApplications/5-BasicApplication/5.3-myStudioPro/5.3.1-myStudioFirstUse.html#%E9%9D%99%E6%80%81ip%E9%85%8D%E7%BD%AE) 章节内容。
-  - 示例：  
-    - 机械臂 IP：`192.168.0.232`  
-    - PC IP：`192.168.0.100`  
-    - 子网掩码：`255.255.255.0`
-    - DNS服务器：`114.114.114.114`
-  
-  - **验证**：完成网络配置后，可在 PC 终端执行以下命令，若能成功返回数据包，则说明网络连接正常：  
-  
-    ```bash
-    ping 192.168.0.232
-    ```
+  - 确保 Mercury E1 已正确接通电源，并处于待机状态  
+  - **注意**：Mercury E1 服务端会在设备上电后自动启动，无需手动操作  
 
 ---
 
@@ -267,16 +250,16 @@ from pymycobot import Pro450Client
 
 ```python
 import time
-from pymycobot import Pro450Client
-# IP地址默认是"192.168.0.232"，端口号默认是4500
-pro450 = Pro450Client('192.168.0.232', 4500)  # 客户端连接通信
+from pymycobot import MercuryE1
+# 串口号根据实际情况修改，波特率默认是1000000
+me = MercuryE1('COM3', 1000000)  # 连接通信
 
-if pro450.is_power_on() !=1:
-    pro450.power_on()  # 上电
+if me.is_power_on() !=1:
+    me.power_on()  # 上电
 
-print(pro450.get_angles())  # 读取全关节角度信息
+print(me.get_angles())  # 读取全关节角度信息
 
-pro450.send_angle(1, 90, 50)  # 控制J1关节运动至90度，速度为50
+me.send_angle(1, 90, 50)  # 控制J1关节运动至90度，速度为50
 
 ```
 
