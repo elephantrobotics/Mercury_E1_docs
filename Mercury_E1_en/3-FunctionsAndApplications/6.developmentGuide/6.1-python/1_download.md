@@ -18,7 +18,7 @@ pip install pymycobot --upgrade --user
 
 **Applicable devices:** 
 
-- **myCobot Pro 450**
+- **Mercury E1**
 
 Currently, there are two versions of Python, one is `2.x` version and the other is `3.x` version. These two versions are incompatible. As `3.x` version is becoming more and more popular, our tutorial will take the latest `3.10.7` version as an example.
 
@@ -174,17 +174,17 @@ python3 setup.py install
 
 ## Simple Use Of Python
 
-After the above preparations are completed, start to control the robot arm through Python code. Here, the MyCobot Pro 450 version is used as an example for demonstration.
+After the above preparations are completed, start to control the robot arm through Python code. Here, the Mercury E1 version is used as an example for demonstration.
 
 First, open the PyCharm you installed, create a new Python file, enter the following code, and import our library:
 
 ```python
-from pymycobot import Pro450Client
+from pymycobot import MercuryE1
 ```
 
 **Note:**
 
-1. If you enter `from pymycobot import Pro450Client`, there is no red wavy line under the font, which proves that it has been successfully installed and can be used. If a red wavy line appears, you can refer to [**How ​​to install the API library** ](https://www.cnblogs.com/xiaoguan-bky/p/11184740.html), [**How ​​to call the API library**](https://jingyan.baidu.com/article/25648fc1e86917d191fd009d.html).
+1. If you enter `from pymycobot import MercuryE1`, there is no red wavy line under the font, which proves that it has been successfully installed and can be used. If a red wavy line appears, you can refer to [**How ​​to install the API library** ](https://www.cnblogs.com/xiaoguan-bky/p/11184740.html), [**How ​​to call the API library**](https://jingyan.baidu.com/article/25648fc1e86917d191fd009d.html).
 
 2. If you do not want to install the API library through the above command, you can download the project to your local computer through the following github.
 
@@ -197,7 +197,7 @@ First, go to the project address: **https://github.com/elephantrobotics/pymycobo
 Before using the sample functions, please ensure that the following hardware and environment are complete:
 
 - **Hardware**
-  - MyCobot Pro 450 robot arm
+  - Mercury E1 robot arm
   - Network cable (for connecting the robot arm to the computer)
   - Power adapter
   - Emergency stop switch (for safe operation)
@@ -205,23 +205,8 @@ Before using the sample functions, please ensure that the following hardware and
 - **Software and Environment**
   - Python 3.6 or later installed
   - The `pymycobot` library installed (using the `pip install pymycobot` terminal command)
-  - Ensure that the MyCobot Pro 450 is properly powered on and in standby mode.
-  - **Note**: The Pro 450 server automatically starts upon powering on; no manual operation is required.
-
-- **Network Configuration**
-  - MyCobot Pro 450 default IP address: `192.168.0.232`
-  - Default port number: `4500`
-  - **Note**: PC The local network card IP address must be set to the same network segment as the robot (e.g., 192.168.0.xxx, where xxx is a number between 2 and 254 and must not conflict with the robot).
-  - Example:
-    - Robot IP: 192.168.0.232
-    - PC IP: 192.168.0.100
-    - Subnet mask: 255.255.255.0
-
-  - **Verification**: After completing the network configuration, execute the following command on the PC terminal. If data packets are successfully returned, the network connection is normal:
-
-    ```bash
-    ping 192.168.0.232
-    ```
+  - Ensure that the Mercury E1 is properly powered on and in standby mode.
+  - **Note**: The Mercury E1 server automatically starts upon powering on; no manual operation is required.
 
 ---
 
@@ -229,17 +214,17 @@ Before using the sample functions, please ensure that the following hardware and
 
 ```python
 import time
-from pymycobot import Pro450Client
+from pymycobot import MercuryE1
 
-# The default IP address is "192.168.0.232" and the default port number is 4500
-pro450 = Pro450Client('192.168.0.232', 4500) # Client connection communication
+# Modify the serial port number according to the actual situation. The default baud rate is 1000000
+me = MercuryE1('COM3', 1000000) # connection communication
 
-if pro450.is_power_on() !=1:
-    pro450.power_on()  # Power on
+if me.is_power_on() !=1:
+    me.power_on()  # Power on
 
-print(pro450.get_angles()) # Read all joint angles
+print(me.get_angles()) # Read all joint angles
 
-pro450.send_angle(1, 90, 50) # Control J1 joint movement to 90 degrees at a speed of 50
+me.send_angle(1, 90, 50) # Control J1 joint movement to 90 degrees at a speed of 50
 
 ```
 

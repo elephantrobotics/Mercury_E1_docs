@@ -1,37 +1,28 @@
-# Pro 450 Python Socket API
+# Mercury E1 Python API
 
 ## Preparing For Use
 
 Before using the Python API, please ensure that the following hardware and environment are complete:
 
 - **Hardware**
-  - MyCobot Pro 450 robot arm
-  - Network cable (for connecting the robot arm to the computer)
+
+  - Mercury E1 robotic arm
+
+  - 485 serial port device (for connecting the robotic arm to the computer)
+
   - Power adapter
+
   - Emergency stop switch (for safe operation)
 
 - **Software and Environment**
-  - Python 3.6 or later installed
-  - The `pymycobot` library installed (using the `pip install pymycobot` terminal command)
-  - Ensure that the MyCobot Pro 450 is properly powered on and in standby mode.
-  - **Note**: The Pro 450 server automatically starts upon powering on; no manual operation is required.
 
-- **Network Configuration**
-  - MyCobot Pro 450 default IP address: `192.168.0.232`
-  - Default port number: `4500`
-  - **Note**: PC The local network card IP address must be set to the same network segment as the robot (e.g., 192.168.0.xxx, where xxx is a number between 2 and 254 and must not conflict with the robot).
-  - For detailed configuration instructions, please refer to the section on [Static IP Configuration](../../5-BasicApplication/5.3-myStudioPro/5.3.1-myStudioFirstUse.md).
-  - Example:
-    - Robot IP: `192.168.0.232`
-    - PC IP: `192.168.0.100`
-    - Subnet mask: `255.255.255.0`
-    - DNS server: `114.114.114.114`
+  - Python 3.6 or later is installed
 
-  - **Verification**: After completing the network configuration, execute the following command on the PC terminal. If data packets are successfully returned, the network connection is normal:
+  - The `pymycobot` library is installed (installed via the terminal command `pip install pymycobot`)
 
-    ```bash
-    ping 192.168.0.232
-    ```
+  - Ensure the Mercury E1 is properly powered on and in standby mode
+
+  - **Note**: The Mercury E1 server will start automatically after the device is powered on; no manual operation is required.
 
 ---
 
@@ -39,18 +30,18 @@ Before using the Python API, please ensure that the following hardware and envir
 
 API (Application Programming Interface), also known as Application Programming Interface functions, are predefined functions. When using the following function interfaces, please import our API library at the beginning by entering the following code, otherwise it will not run successfully:
 
-**Note:** Before use, please make sure that the MyCobot Pro 450 server is turned on and the PC and the robot are in the same network segment.
+**Note:** Before use, please make sure that the Mercury E1 server is turned on and the PC and the robot are in the same network segment.
 
 ```python
 # Example
-from pymycobot import Pro450Client
-# The default IP address is "192.168.0.232" and the default port number is 4500
-mc = Pro450Client('192.168.0.232', 4500)
+from pymycobot import MercuryE1
+# Modify the serial port number according to the actual situation. The default baud rate is 1000000
+me = MercuryE1('COM3', 1000000)
 
-if mc.is_power_on() !=1:
-    mc.power_on()
+if me.is_power_on() !=1:
+    me.power_on()
 
-print(mc.get_angles())
+print(me.get_angles())
 ```
 
 ### 1. System Status
@@ -69,7 +60,7 @@ print(mc.get_angles())
 
 - **function：** Detection robot model
 
-- **Return value：** Definition Rule: Actual machine model. For example, the MyCobot Pro 450 model is 4503
+- **Return value：** Definition Rule: Actual machine model. For example, the Mercury E1 model is 6500
 
 #### `get_atom_version()`
 
@@ -127,7 +118,7 @@ print(mc.get_angles())
   
 - **Parameters:**
   - `1`: Always execute the latest command first.
-  - `0`: Execute instructions sequentially in the form of a queue.
+  - `0`: Execute instructions sequentially in the form of a queue
 
 #### `get_debug_state()`
 
@@ -163,7 +154,7 @@ print(mc.get_angles())
   - 0 - Failure
   - 1 - Error
 
-#### `set_communication_mode(protocol_mode)`
+<!-- #### `set_communication_mode(protocol_mode)`
 
 - **Function:** Sets the current robot Modbus communication mode.
 
@@ -189,7 +180,7 @@ print(mc.get_angles())
     - 1 - 485 communication mode
   - `protocol_mode`: `int`
     - `0`: Custom protocol
-    - `1`: Modbus protocol
+    - `1`: Modbus protocol -->
 
 #### `get_free_move_mode()`
 
@@ -217,21 +208,21 @@ print(mc.get_angles())
 
 - **Function:** Read robot error and safety status
 
-- **Return Value:** 0 - Normal. For example, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], Other - Robot abnormal
+- **Return Value:** 0 - Normal. For example, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], Other - Robot abnormal
 
-  - `[Joint collision, whether in motion, whether J1 exceeds limits, whether J2 exceeds limits, whether J3 exceeds limits, whether J4 exceeds limits, whether J5 exceeds limits, whether J6 exceeds limits, whether J1 has a motor hardware error, whether J2 has a motor hardware error, whether J3 has a motor hardware error, whether J4 has a motor hardware error, whether J5 has a motor hardware error, whether J6 has a motor hardware error, whether J1 has a software communication error, whether J2 has a software communication error, whether J3 has a software communication error, whether J4 has a software communication error, whether J5 has a software communication error, whether J6 has a software communication error]`
+  - `[Joint collision, whether in motion, whether J1 exceeds limits, whether J2 exceeds limits, whether J3 exceeds limits, whether J4 exceeds limits, whether J5 exceeds limits, whether J6 exceeds limits, whether J7 exceeds limits, whether J1 has a motor hardware error, whether J2 has a motor hardware error, whether J3 has a motor hardware error, whether J4 has a motor hardware error, whether J5 has a motor hardware error, whether J6 has a motor hardware error, whether J7 has a motor hardware error, whether J1 has a software communication error, whether J2 has a software communication error, whether J3 has a software communication error, whether J4 has a software communication error, whether J5 has a software communication error, whether J6 has a software communication error, whether J7 has a software communication error]`
 
 #### `servo_restore(joint_id)`
 
 - **function**：Clear joint abnormalities
 - **Parameters**：
-  - `joint_id`: int. joint id 1 - 6, 254-All joints restored.
+  - `joint_id`: int. joint id 1 - 7, 254-All joints restored.
 
 #### `get_comm_error_counts(joint_id)`
 
 - **function**：Read the number of communication exceptions
 - **Parameters**：
-  - `joint_id`: int. joint id 1 - 6
+  - `joint_id`: int. joint id 1 - 7
 - **Return value**: `list` A list of length 4, such as [0, 0, 0, 0], represents:
 
   - `[0]`: Number of joint sending exceptions
@@ -271,7 +262,7 @@ print(mc.get_angles())
 
 ### 4.MDI Mode And Operation
 
-#### `set_control_mode(mode)`
+<!-- #### `set_control_mode(mode)`
 
 - **Function**: Set the robot motion mode
 - **Parameter**:
@@ -284,7 +275,7 @@ print(mc.get_angles())
 - **Function**: Get the robot motion mode
 - **Return value**:
   - `0`: Position mode
-  - `1`: Torque mode
+  - `1`: Torque mode -->
 
 #### `get_angles()`
 
@@ -294,23 +285,24 @@ print(mc.get_angles())
 #### `get_angle()`
 
 - **function:** Get single joint angle
-- **Parameters**： `joint_id` (int): 1 ~ 6
+- **Parameters**： `joint_id` (int): 1 ~ 7
 - **Return value:** `float`, single joint angle
 
 #### `send_angle(id, degree, speed)`
 
 - **function:** send one degree of joint to robot arm
 - **Parameters:**
-  - `id`: Joint id(`genre.Angle`), range int 1-6
+  - `id`: Joint id(`genre.Angle`), range int 1-7
   - `degree`: degree value(`float`)
     | Joint Id | range |
     | ---- | ---- |
-    | 1 | -162 ~ 162 |
-    | 2 | -125 ~ 125 |
-    | 3 | -154 ~ 154 |
-    | 4 | -162 ~ 162 |
-    | 5 | -162 ~ 162 |
-    | 6 | -165 ~ 165 |
+    | 1 | -155 ~ 155 |
+    | 2 | -65 ~ 105 |
+    | 3 | -160 ~ 160 |
+    | 4 | -135 ~ 18 |
+    | 5 | -160 ~ 160 |
+    | 6 | -100 ~ 117 |
+    | 6 | -135 ~ 135 |
 
   - `speed`：the speed and range of the robotic arm's movement 1~100
 
@@ -318,7 +310,7 @@ print(mc.get_angles())
 
 - **function：** Send all angles to all joints of the robotic arm
 - **Parameters:**
-  - `angles`: a list of degree value(`List[float]`), length 6
+  - `angles`: a list of degree value(`List[float]`), length 7
   - `speed`: (`int`) 1 ~ 100
 
 #### `get_coords()`
@@ -334,9 +326,9 @@ print(mc.get_angles())
   - `coord`: coord value(`float`)
     | Coord Id | range |
     | ---- | ---- |
-    | x | -474 ~ 474 |
-    | y | -474 ~ 474 |
-    | z | -180 ~ 677 |
+    | x | -623 ~ 623 |
+    | y | -623 ~ 623 |
+    | z | -172 ~ 846 |
     | rx | -180 ~ 180 |
     | ry | -180 ~ 180 |
     | rz | -180 ~ 180 |
@@ -408,7 +400,7 @@ print(mc.get_angles())
 
 - **function:** jog control angle
 - **Parameters**:
-  - `joint_id`: Represents the joints of the robotic arm, represented by joint IDs ranging from 1 to 6
+  - `joint_id`: Represents the joints of the robotic arm, represented by joint IDs ranging from 1 to 7
   - `direction(int)`: To control the direction of movement of the robotic arm, input `0` as negative value movement and input `1` as positive value movement
   - `speed`: 1 ~ 100
 
@@ -424,7 +416,7 @@ print(mc.get_angles())
 
 - **function:** Single joint angle increment control
 - **Parameters**:
-  - `joint_id`: 1-6
+  - `joint_id`: 1-7
   - `increment`: Incremental movement based on the current position angle
   - `speed`: 1 ~ 100
 
@@ -480,36 +472,36 @@ print(mc.get_angles())
 
 - **function:** Read the minimum joint angle
 - **Parameters:**
-  - `joint_id` : Enter joint ID (range 1-6)
+  - `joint_id` : Enter joint ID (range 1-7)
 - **Return value**：`float` Angle value
 
 #### `get_joint_max_angle(joint_id)`
 
 - **function:** Read the maximum joint angle
 - **Parameters:**
-  - `joint_id` : Enter joint ID (range 1-6)
+  - `joint_id` : Enter joint ID (range 1-7)
 - **Return value:** `float` Angle value
 
 #### `set_joint_min_angle(id, angle)`
 
 - **function:** Set minimum joint angle limit
 - **Parameters:**
-  - `id` : Enter joint ID (range 1-6)
+  - `id` : Enter joint ID (range 1-7)
   - `angle`: Refer to the limit information of the corresponding joint in the [send_angle()](#send_angleid-degree-speed) interface, which must not be less than the minimum value
 
 #### `set_joint_max_angle(id, angle)`
 
 - **function:** Set minimum joint angle limit
 - **Parameters:**
-  - `id` : Enter joint ID (range 1-6)
+  - `id` : Enter joint ID (range 1-7)
   - `angle`: Refer to the limit information of the corresponding joint in the [send_angle()](#send_angleid-degree-speed) interface, which must not be greater than the maximum value
 
 ### 8. Joint Motor Auxiliary Control
 
-#### `get_servo_encoders()`
+<!-- #### `get_servo_encoders()`
 
 - **function**：Read the full joint encoder value
-- **Return value**： A list of length 6
+- **Return value**： A list of length 6 -->
 
 <!-- #### `is_servo_enable(servo_id)`
 
@@ -532,33 +524,36 @@ print(mc.get_angles())
 
 - **function:** The current position of the calibration joint actuator is the angle zero point
 - **Parameters**:
-  - `servo_id`: 1 - 6
+  - `servo_id`: 1 - 7
 
-#### `set_break（joint_id, value）`
+#### `set_servos_calibration()`
+
+- **function:** The current position of all joints of the robotic arm is calibrated to the zero angle point.
+<!-- #### `set_break（joint_id, value）`
 
 - **function:** Set break point
 - **Parameters**：
   - `joint_id`: int. joint id 1 - 6
   - `value`: int. 0 - disable, 1 - enable
-- **Return value:** 0 : faile; 1 : success
+- **Return value:** 0 : faile; 1 : success -->
 
-#### `set_motor_enabled(joint_id, state`
+#### `set_motor_enabled(joint_id, state)`
 
 - **function:** Set the robot torque state.(Release joint interface)
 - **Parameters**：
-  - `joint_id`: int. joint id 1 - 6, 254-all joints
+  - `joint_id`: int. joint id 1 - 7, 254-all joints
   - `state`: int. 0 - disable, 1 - enable
 
 ### 9. Drag Teach
 
-#### `drag_teach_save()`
+<!-- #### `drag_teach_save()`
 
 - **Function:** Start recording and dragging the teach point.
 - Note: For optimal motion performance, the recording time should not exceed 120 seconds.
 
 #### `drag_teach_pause()`
 
-- **Function:** Pause drag teaching
+- **Function:** Pause dragging the teach point
 
 #### `drag_teach_execute()`
 
@@ -566,25 +561,11 @@ print(mc.get_angles())
 
 #### `drag_teach_clean()`
 
-- **Function:** Clear the sampling point.
-
-#### `set_pro_gripper_offset(offset=2)`
-
-- **Function:** Sets the Pro force control gripper offset. When executing a teaching trajectory with gripper dragging, the actual gripper angle will be reduced by offset (default is 2).
-
-- **Parameters:** `int`
-
-  - `offset`: Range -127 ~ 127, default 2
-
-#### `get_pro_gripper_offset()`
-
-- **Function:** Gets the Pro force control gripper offset. When executing a teaching trajectory with gripper dragging, the actual gripper angle will be reduced by offset (default is 2).
-
-- **Return Value:** `int`, range -127 ~ 127
+- **Function:** Clear the sampling point. -->
 
 ### 10. Dynamics
 
-#### `get_collision_mode()`
+<!-- #### `get_collision_mode()`
 
 - **Function**: Query the collision detection mode
 - **Return value**:
@@ -635,29 +616,29 @@ print(mc.get_angles())
 
 #### `parameter_identify()`
 
-- **Function**: Kinetic parameter identification
+- **Function**: Kinetic parameter identification -->
 
 ### 11. Circular Motion
 
-#### `write_move_c(transpoint, endpoint, speed)`
+<!-- #### `write_move_c(transpoint, endpoint, speed)`
 
 - **Function**: Circular arc motion (specify transit points)
 - **Parameter**:
 - `transpoint(list)`: Arc transit points
 - `endpoint(list)`: Arc endpoint
-- `speed(int)`: 1 to 100
+- `speed(int)`: 1 to 100 -->
 
 ### 12. Run Auxiliary Information
 
-#### `get_zero_pos()`
+<!-- #### `get_zero_pos()`
 
 - **function**: Read the zero encoder value
-- **Return value:** `list`The value of the zero encoder for seven joints
+- **Return value:** `list`The value of the zero encoder for seven joints -->
 
 #### `get_servo_speeds()`
 
 - **function**：Get the movement speed of all joints
-- **Return value**： unit step/s
+- **Return value**： unit rpm
 
 #### `get_servo_currents()`
 
@@ -668,6 +649,12 @@ print(mc.get_angles())
 
 - **function**：Get the movement status of all joints
 - **Return value**： a value of 0 means no error
+
+#### `get_motor_temps()`
+
+- **Function**: Get motor temperature
+
+- **Return value**: A list, bits 1-7 represent coil temperature, bits 8-14 represent MOSFET temperature.
 
 ### 13. Robotic Arm End IO Control
 
@@ -701,7 +688,7 @@ print(mc.get_angles())
 - 0: Not clicked
 - 1: Clicked -->
 
-#### `set_color(r, g, b)`
+<!-- #### `set_color(r, g, b)`
 
 - **Function**: Set the color of the end light of the robot arm
 
@@ -711,11 +698,11 @@ print(mc.get_angles())
 
   - `g (int)`: 0 to 255
 
-  - `b (int)`: 0 to 255
+  - `b (int)`: 0 to 255 -->
 
 ### 15. Bottom IO Control
 
-#### `set_base_io_output(pin_no, pin_signal)`
+<!-- #### `set_base_io_output(pin_no, pin_signal)`
 
 - **function**：Set Base IO Output
 - **Parameters**：
@@ -755,7 +742,7 @@ print(mc.get_angles())
 
 - **Function:** Controls 485 devices on the bottom
 - **Parameters:**
-  - `data` (`list`) List contents are in hexadecimal format, with a maximum length of 64 characters.
+  - `data` (`list`) List contents are in hexadecimal format, with a maximum length of 64 characters. -->
 
 ### 16. Set Up 485 Communication At The End Of The Robotic Arm
 
@@ -892,7 +879,7 @@ print(mc.get_angles())
 #### `get_model_direction()`
 
 - **Function:** Get the joint model direction
-- **Return value:** Model direction of joints 1-6
+- **Return value:** Model direction of joints 1-7
   - `1` - Same direction as the motor
   - `0` - Opposite direction from the motor
 
@@ -900,9 +887,10 @@ print(mc.get_angles())
 
 - **Function:** Set the joint model direction
 - **Parameters:**
-  - `joint_id (int)`: 1 to 6
+  - `joint_id (int)`: 1 to 7
   - `direction (int)`: `1` - Same direction as the motor. `0` - Opposite direction from the motor
 
+<!-- 
 #### `get_filter_len(rank)`
 
 - **Function:** Get filter parameters
@@ -925,7 +913,7 @@ print(mc.get_angles())
     - `3`: Joint velocity fusion filter
     - `4`: Coordinate velocity fusion filter
     - `5`: Drag teach sampling period
-  - `value (int)`: 1 to 255
+  - `value (int)`: 1 to 255 -->
 
 #### `get_fusion_parameters(rank_mode)`
 
@@ -947,13 +935,13 @@ print(mc.get_angles())
 
 ### 19. Kinematics Algorithm Interface
 
-#### `solve_inv_kinematics(target_coords, current_angles)`
+<!-- #### `solve_inv_kinematics(target_coords, current_angles)`
 
 - **Function**: Convert coordinates to angles.
 - **Parameters**
   - `target_coords`: `list` A list of floating-point values ​​for all coordinates.
   - `current_angles`: `list` A list of floating-point values ​​for all angles, indicating the current angles of the robot arm.
-- **Return Value**: `list` A list of floating-point values ​​for all angles.
+- **Return Value**: `list` A list of floating-point values ​​for all angles. -->
 
 ### 20. Pro Force-controlled Gripper
 
